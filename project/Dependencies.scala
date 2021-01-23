@@ -15,6 +15,7 @@ object Dependencies {
   val FlexmarkVersion         = "0.62.2"
   val FlywayVersion           = "7.5.2"
   val Fs2Version              = "2.5.0"
+  val GatlingVersion          = "3.5.0"
   val H2Version               = "1.4.200"
   val Http4sVersion           = "0.21.16"
   val Icu4jVersion            = "68.2"
@@ -40,6 +41,11 @@ object Dependencies {
   val TwelveMonkeysVersion    = "3.6.2"
   val JQueryVersion           = "3.5.1"
   val ViewerJSVersion         = "0.5.8"
+
+  val gatling = Seq(
+    "io.gatling.highcharts" % "gatling-charts-highcharts" % GatlingVersion,
+    "io.gatling"            % "gatling-test-framework"    % GatlingVersion
+  )
 
   val kittens = Seq(
     "org.typelevel" %% "kittens" % KittensVersion
