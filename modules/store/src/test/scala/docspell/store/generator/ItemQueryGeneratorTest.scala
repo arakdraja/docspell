@@ -1,15 +1,16 @@
 package docspell.store.generator
 
-import docspell.store.StoreFixture
+import java.time.LocalDate
+
 import docspell.store.records._
 import minitest._
 import docspell.common._
 import docspell.query.ItemQueryParser
+import docspell.store.qb.DSL._
 import docspell.store.qb.generator.{ItemQueryGenerator, Tables}
-import docspell.store.impl.DoobieMeta._
-import docspell.store.qb.impl.ConditionBuilder
 
-object ItemQueryGeneratorTest extends SimpleTestSuite with StoreFixture {
+object ItemQueryGeneratorTest extends SimpleTestSuite {
+  import docspell.store.impl.DoobieMeta._
 
   val tables = Tables(
     RItem.as("i"),
@@ -24,9 +25,14 @@ object ItemQueryGeneratorTest extends SimpleTestSuite with StoreFixture {
 
   test("migration") {
     val q = ItemQueryParser
-      .parseUnsafe("(& name:hello date>2020-02-01 (| source=expense tag:[car,expense]))")
+      .parseUnsafe("(& name:hello date>=2020-02-01 (| source=expense folder=test ))")
     val cond = ItemQueryGenerator(tables, Ident.unsafe("coll"))(q)
-    print(s"${ConditionBuilder.build(cond)}")
+    val expect =
+      tables.item.name.like("hello") && tables.item.itemDate >= Timestamp.atUtc(
+        LocalDate.of(2020, 2, 1).atStartOfDay()
+      ) && (tables.item.source === "expense" || tables.folder.name === "test")
+
+    assertEquals(cond, expect)
   }
 
 //  test("migration2") {
